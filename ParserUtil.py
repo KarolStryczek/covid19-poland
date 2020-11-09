@@ -18,9 +18,7 @@ def parse_new_cases(new_cases_dict: Dict) -> pd.DataFrame:
             pass
     new_cases = pd.DataFrame(voivodeships_cases.items(), columns=['voivodeship', 'cases'])
     new_cases_with_date, date = populate_new_cases_with_date(new_cases, first_tweet.created_at)
-    filename = rf'./data/daily/{date}.csv'
-    if not os.path.isfile(filename):
-        new_cases_with_date.to_csv(filename, index=False)
+    save_new_cases(new_cases_with_date, date)
     return new_cases_with_date
 
 
@@ -38,3 +36,20 @@ def populate_new_cases_with_date(new_cases: pd.DataFrame, date_time: datetime) -
     date = date_time.strftime('%Y-%m-%d')
     new_cases.insert(1, 'date', [date] * len(new_cases))
     return new_cases, date
+
+
+def save_new_cases(new_cases: pd.DataFrame, date: str) -> None:
+    filepath = r'./data/cases.csv'
+    save_to_daily_file(new_cases, date)
+    if not os.path.isfile(filepath):
+        new_cases.to_csv(filepath, index=False)
+    else:
+        cases = pd.read_csv(filepath)
+        if len(cases[cases.date == date]) == 0:
+            new_cases.to_csv(filepath, index=False, header=False, mode='a')
+
+
+def save_to_daily_file(new_cases: pd.DataFrame, date:str) -> None:
+    filepath = rf'./data/daily/{date}.csv'
+    if not os.path.isfile(filepath):
+        new_cases.to_csv(filepath, index=False)
