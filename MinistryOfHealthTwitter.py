@@ -21,7 +21,6 @@ class MinistryOfHealthTwitter:
         new_cases_tweets = list()
         previous_tweets = list()
         for tweet in self.get_tweets_cursor(**kwargs).items(count):
-            # print(f'{tweet.id} | {tweet.in_reply_to_status_id}: {tweet.full_text}')
             if self.is_new_cases_start_tweet(tweet):
                 new_case = {'first_tweet': tweet, 'other_tweets': []}
                 if previous_tweets[-1].in_reply_to_status_id == tweet.id:
