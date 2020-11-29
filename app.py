@@ -9,6 +9,7 @@ import dash_bootstrap_components as dbc
 
 stylesheets = dbc.themes.MINTY
 app = dash.Dash(__name__, external_stylesheets=[stylesheets])
+server = app.server
 
 dates = AppUtil.get_dates()
 date_min, date_max = min(dates), max(dates)
