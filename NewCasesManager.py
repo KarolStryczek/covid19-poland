@@ -1,5 +1,4 @@
 import pandas as pd
-from datetime import datetime
 
 
 filepath = r'./data/cases.csv'
