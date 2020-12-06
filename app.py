@@ -1,71 +1,53 @@
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
 import plotly.express as px
-import plotly.graph_objects as go
-import json
-from datetime import date
 from dash.dependencies import Input, Output
-import NewCasesManager
 import AppUtil
 import dash_bootstrap_components as dbc
+import NewCasesManager
+from layout import layout
 
 stylesheets = dbc.themes.MINTY
 app = dash.Dash(__name__, external_stylesheets=[stylesheets])
+server = app.server
+app.title = "COVID-19 in Poland"
+app.layout = layout
+
+voivodeships, voivodeship_map = AppUtil.get_geojson()
 
 dates = AppUtil.get_dates()
-date_min, date_max = min(dates), max(dates)
-
-app.layout = html.Div(
-    children=[
-        html.H1(children='COVID-19 New cases'),
-
-        html.Div(children='Map below shows new COVID-19 cases in given period'),
-
-        dcc.Graph(
-            id='choropleth',
-            style={
-                'height': 500,
-                'width': 900,
-                "display": "block",
-                "margin-left": "auto",
-                "margin-right": "auto",
-            },
-        ),
-
-        html.Div(
-            children=dcc.DatePickerRange(
-                id='date-picker-range',
-                display_format='MM-D-Y',
-                min_date_allowed=date_min,
-                max_date_allowed=date_max,
-                initial_visible_month=date_max,
-                start_date=date_min,
-                end_date=date_max
-            ),
-        )
-    ],
-    style={
-        'margin-top': '30px',
-        'textAlign': 'center',
-    }
-)
+date_from, date_to = min(dates), max(dates)
 
 
-@app.callback(Output(component_id='choropleth', component_property='figure'),
-              [Input(component_id='date-picker-range', component_property='start_date'),
-               Input(component_id='date-picker-range', component_property='end_date')])
-def display_choropleth(date_from, date_to):
-    voivodeships, voivodeship_map = AppUtil.get_geojson()
-    cases = NewCasesManager.get_cases_grouped(date_from=date_from, date_to=date_to)
-    cases = NewCasesManager.populate_cases_with_ids(cases, voivodeship_map)
+@app.callback(Output(component_id='cases_map', component_property='figure'),
+              Input(component_id='date-picker-range', component_property='start_date'),
+              Input(component_id='date-picker-range', component_property='end_date'))
+def display_cases_map(start_date, end_date):
+    global date_from, date_to
+    date_from = start_date
+    date_to = end_date
+    cases = AppUtil.get_cases(date_from, date_to, voivodeship_map)
     fig = px.choropleth(cases, geojson=voivodeships, locations='id', color='cases', hover_name='voivodeship',
                         color_continuous_scale="reds", labels={'cases': 'New cases'})
     fig.update_geos(fitbounds="locations", visible=False)
     fig.update_layout(
-        margin={"r": 0, "t": 0, "l": 0, "b": 0}
+        margin={"r": 0, "t": 0, "l": 0, "b": 0},
     )
     return fig
+
+
+@app.callback(Output(component_id='voivodeship-details', component_property='figure'),
+              Output(component_id='details-label', component_property='children'),
+              Input(component_id='cases_map', component_property='hoverData'))
+def display_details(hover_data):
+    if hover_data is not None:
+        voivodeship_name = hover_data['points'][0]['hovertext']
+        cases = NewCasesManager.get_cases(voivodeship_name, date_from, date_to)
+        cases.sort_values(by='date', inplace=True)
+        fig = px.line(cases['cases'])
+        fig.update_layout(xaxis_title="Data", yaxis_title="Liczba nowych przypadków")
+        return fig, f'Województwo: {voivodeship_name}'
+
+    return px.line(), 'Nakieruj kursor na dowolne województwo aby zobaczyć szczegóły'
 
 
 if __name__ == '__main__':
