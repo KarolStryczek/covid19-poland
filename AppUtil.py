@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import NewCasesManager
 
 
 def get_geojson():
@@ -17,3 +18,9 @@ def get_dates():
     dates = cases['date'].unique()
     dates.sort()
     return dates
+
+
+def get_cases(date_from, date_to, voivodeship_map):
+    cases = NewCasesManager.get_cases_grouped(date_from=date_from, date_to=date_to)
+    cases = NewCasesManager.populate_cases_with_ids(cases, voivodeship_map)
+    return cases

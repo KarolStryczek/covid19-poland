@@ -12,6 +12,8 @@ def get_cases(voivodeship: str = None, date_from: str = None, date_to: str = Non
         cases = cases[cases.date >= date_from]
     if date_to is not None:
         cases = cases[cases.date <= date_to]
+    cases.sort_values(by='date', inplace=True)
+    cases.reset_index(inplace=True)
     return cases
 
 
