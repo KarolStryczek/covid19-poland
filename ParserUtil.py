@@ -15,7 +15,7 @@ def parse_new_cases(new_cases_dict: Dict) -> pd.DataFrame:
             parsed_data = parse_voivodeship_data(voivodeship_data)
             voivodeships_cases.update(parsed_data)
         except Exception:
-            print(first_tweet.created_at)
+            print(f'{first_tweet.created_at}: {voivodeships_data}')
     new_cases = pd.DataFrame(voivodeships_cases.items(), columns=['voivodeship', 'cases'])
     new_cases_with_date, date = populate_new_cases_with_date(new_cases, first_tweet.created_at)
     save_new_cases(new_cases_with_date, date)

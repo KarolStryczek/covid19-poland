@@ -6,7 +6,7 @@ import re
 
 class MinistryOfHealthTwitter:
     HEALTH_MINISTRY_TWITTER = "MZ_GOV_PL"
-    PATTERN = re.compile(r"^Mamy [\d|\s]+ now.+ i potwierdzon.+ przypadk.+ zakażenia #koronawirus z województw:")
+    PATTERN = re.compile(r".*Mamy [\d|\s]+ now.+ potwierdzon.+ przypadk.+ zakażenia #koronawirus z województw:")
 
     def __init__(self):
         auth = tweepy.OAuthHandler(os.getenv('TWITTER_API_KEY'), os.getenv('TWITTER_API_KEY_SECRET'))
