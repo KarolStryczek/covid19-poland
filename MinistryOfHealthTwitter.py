@@ -6,7 +6,7 @@ import re
 
 class MinistryOfHealthTwitter:
     HEALTH_MINISTRY_TWITTER = "MZ_GOV_PL"
-    PATTERN = re.compile(r".*Mamy [\d|\s]+ now.+ potwierdzon.+ przypadk.+ zakażenia #koronawirus z województw:")
+    PATTERN = re.compile(r".*Mamy [\d|\s]+ now.+ przypadk.+ zakażenia #*koronawirus.+", re.IGNORECASE)
 
     def __init__(self):
         auth = tweepy.OAuthHandler(os.getenv('TWITTER_API_KEY'), os.getenv('TWITTER_API_KEY_SECRET'))
@@ -22,13 +22,16 @@ class MinistryOfHealthTwitter:
         previous_tweets = list()
         for tweet in self.get_tweets_cursor(**kwargs).items(count):
             if self.is_new_cases_start_tweet(tweet):
-                new_case = {'first_tweet': tweet, 'other_tweets': []}
-                if previous_tweets[-1].in_reply_to_status_id == tweet.id:
-                    new_case['other_tweets'].append(previous_tweets[-1])
-                    if previous_tweets[-2].in_reply_to_status_id == previous_tweets[-1].id:
-                        new_case['other_tweets'].append(previous_tweets[-2])
+                new_case = [tweet]
+                for i in range(len(previous_tweets)-1, -1, -1):
+                    if previous_tweets[i].in_reply_to_status_id == new_case[-1].id:
+                        new_case.append(previous_tweets[i])
+                    else:
+                        previous_tweets = list()
+                        break
                 new_cases_tweets.append(new_case)
-            previous_tweets = previous_tweets[1:] + [tweet] if len(previous_tweets) >= 2 else previous_tweets + [tweet]
+            else:
+                previous_tweets.append(tweet)
         return new_cases_tweets
 
     def is_new_cases_start_tweet(self, tweet: Status) -> bool:

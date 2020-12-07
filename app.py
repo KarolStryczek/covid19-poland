@@ -43,9 +43,12 @@ def display_details(hover_data):
         voivodeship_name = hover_data['points'][0]['hovertext']
         cases = NewCasesManager.get_cases(voivodeship_name, date_from, date_to)
         cases.sort_values(by='date', inplace=True)
-        fig = px.line(cases['cases'])
-        fig.update_layout(xaxis_title="Data", yaxis_title="Liczba nowych przypadków")
-        return fig, f'Województwo: {voivodeship_name}'
+        if len(cases) > 1:
+            fig = px.line(cases['cases'])
+            fig.update_layout(xaxis_title="Data", yaxis_title="Liczba nowych przypadków")
+            return fig, f'Województwo: {voivodeship_name}'
+        else:
+            return px.line(), 'Aby uzyskać wykres zmian w czasie przedział musi być większy niż jeden dzień'
 
     return px.line(), 'Nakieruj kursor na dowolne województwo aby zobaczyć szczegóły'
 

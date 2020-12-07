@@ -30,12 +30,12 @@ layout = html.Div(
                         html.Div(
                             children=dcc.DatePickerRange(
                                 id='date-picker-range',
-                                display_format='MM-D-Y',
+                                display_format='DD-MM-YYYY',
                                 minimum_nights=0,
                                 min_date_allowed=date_min,
                                 max_date_allowed=date_max,
                                 initial_visible_month=date_max,
-                                start_date=date_min,
+                                start_date=date_max,
                                 end_date=date_max
                             ),
                         ),
