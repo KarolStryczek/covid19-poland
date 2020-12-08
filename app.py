@@ -4,13 +4,13 @@ from dash.dependencies import Input, Output
 import AppUtil
 import dash_bootstrap_components as dbc
 import NewCasesManager
-from layout import layout
+import layout
 
 stylesheets = dbc.themes.MINTY
 app = dash.Dash(__name__, external_stylesheets=[stylesheets])
 server = app.server
 app.title = "COVID-19 in Poland"
-app.layout = layout
+app.layout = layout.prepare_layout
 
 voivodeships, voivodeship_map = AppUtil.get_geojson()
 
