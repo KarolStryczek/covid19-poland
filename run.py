@@ -45,7 +45,7 @@ def display_details(hover_data):
         cases = NewCasesManager.get_cases(voivodeship_name, date_from, date_to)
         cases.sort_values(by='date', inplace=True)
         if len(cases) > 1:
-            fig = px.line(cases['cases'])
+            fig = px.line(cases[['cases', 'date']], x='date', y='cases')
             fig.update_layout(xaxis_title="Data", yaxis_title="Liczba nowych przypadków")
             return fig, f'Województwo: {voivodeship_name}'
         else:
