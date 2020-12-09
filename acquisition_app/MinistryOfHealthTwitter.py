@@ -17,7 +17,7 @@ class MinistryOfHealthTwitter:
     def get_tweets_cursor(self, **kwargs) -> tweepy.Cursor:
         return tweepy.Cursor(self.api.user_timeline, id=self.HEALTH_MINISTRY_TWITTER, tweet_mode="extended", **kwargs)
 
-    def get_new_cases_tweets(self, count: int = 100, **kwargs):
+    def get_new_cases_tweets(self, count: int = 500, **kwargs):
         new_cases_tweets = list()
         previous_tweets = list()
         for tweet in self.get_tweets_cursor(**kwargs).items(count):
