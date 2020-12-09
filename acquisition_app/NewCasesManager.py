@@ -1,7 +1,7 @@
 import pandas as pd
 
 
-filepath = r'./data/cases.csv'
+filepath = r'../data/cases.csv'
 
 
 def get_cases(voivodeship: str = None, date_from: str = None, date_to: str = None):

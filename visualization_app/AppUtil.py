@@ -1,10 +1,10 @@
 import json
 import pandas as pd
-import NewCasesManager
+from acquisition_app import NewCasesManager
 
 
 def get_geojson():
-    with open('./data/voivodeships.json', 'r', encoding='utf-8') as outfile:
+    with open('../data/voivodeships.json', 'r', encoding='utf-8') as outfile:
         voivodeships = json.load(outfile)
 
     voivodeship_map = dict()
@@ -14,7 +14,7 @@ def get_geojson():
 
 
 def get_dates():
-    cases = pd.read_csv(r'./data/cases.csv')
+    cases = pd.read_csv(r'../data/cases.csv')
     dates = cases['date'].unique()
     dates.sort()
     return dates

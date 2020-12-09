@@ -1,11 +1,9 @@
 import dash
 import plotly.express as px
 from dash.dependencies import Input, Output
-import AppUtil
+from visualization_app import AppUtil, layout
 import dash_bootstrap_components as dbc
-import NewCasesManager
-import layout
-import UpdateTwitterData
+from acquisition_app import NewCasesManager, UpdateTwitterData
 import threading
 
 stylesheets = dbc.themes.MINTY
