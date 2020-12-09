@@ -3,7 +3,7 @@ import pandas as pd
 
 
 def update_data():
-    updates_filepath = r'../data/update.csv'
+    updates_filepath = r'data/update.csv'
     updates = pd.read_csv(updates_filepath)
     last_id = None
     if len(updates) > 0:
