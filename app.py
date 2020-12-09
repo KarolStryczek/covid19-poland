@@ -5,6 +5,8 @@ import AppUtil
 import dash_bootstrap_components as dbc
 import NewCasesManager
 import layout
+import UpdateTwitterData
+import threading
 
 stylesheets = dbc.themes.MINTY
 app = dash.Dash(__name__, external_stylesheets=[stylesheets])
@@ -22,6 +24,7 @@ date_from, date_to = min(dates), max(dates)
               Input(component_id='date-picker-range', component_property='start_date'),
               Input(component_id='date-picker-range', component_property='end_date'))
 def display_cases_map(start_date, end_date):
+    threading.Thread(UpdateTwitterData.update_data()).start()
     global date_from, date_to
     date_from = start_date
     date_to = end_date
