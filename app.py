@@ -4,13 +4,15 @@ from dash.dependencies import Input, Output
 import AppUtil
 import dash_bootstrap_components as dbc
 import NewCasesManager
-from layout import layout
+import layout
+import UpdateTwitterData
+import threading
 
 stylesheets = dbc.themes.MINTY
 app = dash.Dash(__name__, external_stylesheets=[stylesheets])
 server = app.server
 app.title = "COVID-19 in Poland"
-app.layout = layout
+app.layout = layout.prepare_layout
 
 voivodeships, voivodeship_map = AppUtil.get_geojson()
 
@@ -22,6 +24,7 @@ date_from, date_to = min(dates), max(dates)
               Input(component_id='date-picker-range', component_property='start_date'),
               Input(component_id='date-picker-range', component_property='end_date'))
 def display_cases_map(start_date, end_date):
+    threading.Thread(UpdateTwitterData.update_data()).start()
     global date_from, date_to
     date_from = start_date
     date_to = end_date
@@ -43,9 +46,12 @@ def display_details(hover_data):
         voivodeship_name = hover_data['points'][0]['hovertext']
         cases = NewCasesManager.get_cases(voivodeship_name, date_from, date_to)
         cases.sort_values(by='date', inplace=True)
-        fig = px.line(cases['cases'])
-        fig.update_layout(xaxis_title="Data", yaxis_title="Liczba nowych przypadków")
-        return fig, f'Województwo: {voivodeship_name}'
+        if len(cases) > 1:
+            fig = px.line(cases['cases'])
+            fig.update_layout(xaxis_title="Data", yaxis_title="Liczba nowych przypadków")
+            return fig, f'Województwo: {voivodeship_name}'
+        else:
+            return px.line(), 'Aby uzyskać wykres zmian w czasie przedział musi być większy niż jeden dzień'
 
     return px.line(), 'Nakieruj kursor na dowolne województwo aby zobaczyć szczegóły'
 
