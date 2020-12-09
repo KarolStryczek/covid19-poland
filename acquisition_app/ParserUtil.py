@@ -24,7 +24,7 @@ import re
 
 
 def parse_new_cases(new_cases) -> pd.DataFrame:
-    voivodeships = pd.read_csv(r'../data/voivodeships.csv')
+    voivodeships = pd.read_csv(r'data/voivodeships.csv')
     first_tweet = new_cases[0]
     tweets_text = first_tweet.full_text + new_cases[1].full_text
     new_cases_table = list()
@@ -60,7 +60,7 @@ def populate_new_cases_with_date(new_cases: pd.DataFrame, date_time: datetime) -
 
 
 def save_new_cases(new_cases: pd.DataFrame, date: str) -> None:
-    filepath = r'../data/cases.csv'
+    filepath = r'data/cases.csv'
     # save_to_daily_file(new_cases, date)
     if not os.path.isfile(filepath):
         new_cases.to_csv(filepath, index=False)
