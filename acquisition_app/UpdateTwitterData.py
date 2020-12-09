@@ -1,10 +1,9 @@
-import MinistryOfHealthTwitter
-import ParserUtil
+from acquisition_app import MinistryOfHealthTwitter, ParserUtil
 import pandas as pd
 
 
 def update_data():
-    updates_filepath = r'./data/update.csv'
+    updates_filepath = r'../data/update.csv'
     updates = pd.read_csv(updates_filepath)
     last_id = None
     if len(updates) > 0:
@@ -18,4 +17,8 @@ def update_data():
         new_update = pd.DataFrame([[new_date, new_last_id]], columns=['date', 'last_id'])
         new_update.to_csv(updates_filepath, index=False, header=False, mode='a')
         for new_case in new_cases:
-            cases = ParserUtil.parse_new_cases(new_case)
+            ParserUtil.parse_new_cases(new_case)
+
+
+if __name__ == "__main__":
+    update_data()
