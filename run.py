@@ -14,19 +14,13 @@ app.layout = layout.prepare_layout
 
 voivodeships, voivodeship_map = AppUtil.get_geojson()
 
-dates = AppUtil.get_dates()
-date_from, date_to = min(dates), max(dates)
-
 
 @app.callback(Output(component_id='cases_map', component_property='figure'),
               Input(component_id='date-picker-range', component_property='start_date'),
               Input(component_id='date-picker-range', component_property='end_date'))
 def display_cases_map(start_date, end_date):
     threading.Thread(UpdateTwitterData.update_data()).start()
-    global date_from, date_to
-    date_from = start_date
-    date_to = end_date
-    cases = AppUtil.get_cases(date_from, date_to, voivodeship_map)
+    cases = AppUtil.get_cases(start_date, end_date, voivodeship_map)
     fig = px.choropleth(cases, geojson=voivodeships, locations='id', color='cases', hover_name='voivodeship',
                         color_continuous_scale="reds", labels={'cases': 'New cases'})
     fig.update_geos(fitbounds="locations", visible=False)
@@ -38,11 +32,13 @@ def display_cases_map(start_date, end_date):
 
 @app.callback(Output(component_id='voivodeship-details', component_property='figure'),
               Output(component_id='details-label', component_property='children'),
-              Input(component_id='cases_map', component_property='hoverData'))
-def display_details(hover_data):
+              Input(component_id='cases_map', component_property='hoverData'),
+              Input(component_id='date-picker-range', component_property='start_date'),
+              Input(component_id='date-picker-range', component_property='end_date'))
+def display_details(hover_data, start_date, end_date):
     if hover_data is not None:
         voivodeship_name = hover_data['points'][0]['hovertext']
-        cases = NewCasesManager.get_cases(voivodeship_name, date_from, date_to)
+        cases = NewCasesManager.get_cases(voivodeship_name, start_date, end_date)
         cases.sort_values(by='date', inplace=True)
         if len(cases) > 1:
             fig = px.line(cases[['cases', 'date']], x='date', y='cases')
