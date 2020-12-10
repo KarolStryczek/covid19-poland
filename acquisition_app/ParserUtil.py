@@ -31,12 +31,13 @@ def parse_new_cases(new_cases) -> pd.DataFrame:
     for voivodeship_genitive_name in voivodeships['name_genitive'].values:
         regex_pattern = re.compile(rf'{voivodeship_genitive_name} \(\d+')
         matched_object = regex_pattern.search(tweets_text)
+        name = voivodeships[voivodeships['name_genitive'] == voivodeship_genitive_name]['name'].values[0]
         if matched_object is not None:
             name_genitive, value = matched_object.group().replace('(', '').split(' ')
-            name = voivodeships[voivodeships['name_genitive'] == voivodeship_genitive_name]['name'].values[0]
-            new_cases_table.append([name, value])
         else:
-            print(f'Date: {first_tweet.created_at}, voivodeship: {voivodeship_genitive_name}, text: {tweets_text}')
+            value = 0
+            # print(f'Date: {first_tweet.created_at}, voivodeship: {voivodeship_genitive_name}, text: {tweets_text}')
+        new_cases_table.append([name, value])
     new_cases_data = pd.DataFrame(new_cases_table, columns=['voivodeship', 'cases'])
     new_cases_with_date, date = populate_new_cases_with_date(new_cases_data, first_tweet.created_at)
     save_new_cases(new_cases_with_date, date)
