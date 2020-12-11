@@ -2,9 +2,7 @@ from visualization_app import AppUtil
 import plotly.express as px
 
 
-def prepare_choropleth_map(start_date, end_date):
-    voivodeships, voivodeship_map = AppUtil.get_geojson()
-    cases = AppUtil.get_cases(start_date, end_date, voivodeship_map)
+def prepare_choropleth_map_from_cases(cases, voivodeships):
     fig = px.choropleth(
         data_frame=cases,
         geojson=voivodeships,
@@ -26,6 +24,7 @@ def prepare_choropleth_map(start_date, end_date):
     return fig
 
 
-def prepare_choropleth_map_new_cases():
-    new_date = max(AppUtil.get_dates())
-    return prepare_choropleth_map(new_date, new_date), new_date
+def prepare_choropleth_map(start_date, end_date):
+    cases, voivodeships = AppUtil.get_cases_and_voivodeships(start_date, end_date)
+    return prepare_choropleth_map_from_cases(cases, voivodeships)
+

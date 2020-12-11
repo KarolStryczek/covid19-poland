@@ -27,10 +27,15 @@ def prepare_layout():
 
 
 def page_1():
-    choropleth_map, date = callbacks.prepare_choropleth_map_new_cases()
+    new_date = max(AppUtil.get_dates())
+    cases, voivodeships = AppUtil.get_cases_and_voivodeships(new_date, new_date)
+    choropleth_map = callbacks.prepare_choropleth_map_from_cases(cases, voivodeships)
+    cases_n = AppUtil.count_cases(cases)
+    cases_word = "przypadek" if cases_n == 1 else "przypadki" if cases_n%10 in [2, 3, 4] else "przypadków"
+    message = f'{new_date} ({cases_n} {cases_word})'
     return [
         html.H1(children="Najnowsze przypadki COVID-19"),
-        html.H2(children=date),
+        html.H2(children=message),
         dcc.Graph(
             id='new-cases-map',
             figure=choropleth_map,
@@ -115,4 +120,6 @@ def page_2():
                         'display': 'inline-block',
                     }
                 )
-            ])]
+            ]
+        )
+    ]

@@ -1,5 +1,6 @@
 import json
 from data_access import dao
+import pandas as pd
 
 
 def get_geojson():
@@ -19,12 +20,17 @@ def get_dates():
     return dates
 
 
-def get_cases(date_from, date_to, voivodeship_map):
+def get_cases_and_voivodeships(date_from, date_to):
+    voivodeships, voivodeship_map = get_geojson()
     cases = dao.get_cases_grouped(date_from=date_from, date_to=date_to)
     cases = populate_cases_with_ids(cases, voivodeship_map)
-    return cases
+    return cases, voivodeships
 
 
 def populate_cases_with_ids(cases, id_map):
     cases['id'] = cases['voivodeship'].apply(lambda name: id_map[name])
     return cases
+
+
+def count_cases(cases: pd.DataFrame):
+    return cases['cases'].sum()
