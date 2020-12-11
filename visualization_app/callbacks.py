@@ -1,8 +1,11 @@
 from visualization_app import AppUtil
 import plotly.express as px
+import plotly
+import pandas as pd
+from typing import Dict
 
 
-def prepare_choropleth_map_from_cases(cases, voivodeships):
+def prepare_choropleth_map_from_cases(cases: pd.DataFrame, voivodeships: Dict) -> plotly.graph_objs.Figure:
     fig = px.choropleth(
         data_frame=cases,
         geojson=voivodeships,
@@ -24,7 +27,7 @@ def prepare_choropleth_map_from_cases(cases, voivodeships):
     return fig
 
 
-def prepare_choropleth_map(start_date, end_date):
+def prepare_choropleth_map(start_date: AppUtil.any_date, end_date: AppUtil.any_date) -> plotly.graph_objs.Figure:
     cases, voivodeships = AppUtil.get_cases_and_voivodeships(start_date, end_date)
     return prepare_choropleth_map_from_cases(cases, voivodeships)
 

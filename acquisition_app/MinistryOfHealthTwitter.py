@@ -1,5 +1,6 @@
 import tweepy
 from tweepy.models import Status
+from typing import List
 import os
 import re
 
@@ -8,7 +9,7 @@ class MinistryOfHealthTwitter:
     HEALTH_MINISTRY_TWITTER = "MZ_GOV_PL"
     PATTERN = re.compile(r".*Mamy [\d|\s]+ now.+ przypadk.+ zakażenia #*koronawirus.+", re.IGNORECASE)
 
-    def __init__(self):
+    def __init__(self) -> None:
         auth = tweepy.OAuthHandler(os.getenv('TWITTER_API_KEY'), os.getenv('TWITTER_API_KEY_SECRET'))
         auth.set_access_token(os.getenv('TWITTER_ACCESS_TOKEN'), os.getenv('TWITTER_ACCESS_TOKEN_SECRET'))
         self.api = tweepy.API(auth)
@@ -17,7 +18,7 @@ class MinistryOfHealthTwitter:
     def get_tweets_cursor(self, **kwargs) -> tweepy.Cursor:
         return tweepy.Cursor(self.api.user_timeline, id=self.HEALTH_MINISTRY_TWITTER, tweet_mode="extended", **kwargs)
 
-    def get_new_cases_tweets(self, count: int = 500, **kwargs):
+    def get_new_cases_tweets(self, count: int = 500, **kwargs) -> List[List[Status]]:
         new_cases_tweets = list()
         previous_tweets = list()
         for tweet in self.get_tweets_cursor(**kwargs).items(count):

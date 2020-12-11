@@ -27,7 +27,7 @@ def prepare_layout():
 
 
 def page_1():
-    new_date = max(AppUtil.get_dates())
+    new_date = max(AppUtil.get_unique_dates())
     cases, voivodeships = AppUtil.get_cases_and_voivodeships(new_date, new_date)
     choropleth_map = callbacks.prepare_choropleth_map_from_cases(cases, voivodeships)
     cases_n = AppUtil.count_cases(cases)
@@ -51,7 +51,7 @@ def page_1():
 
 
 def page_2():
-    dates = AppUtil.get_dates()
+    dates = AppUtil.get_unique_dates()
     date_min, date_max = min(dates), max(dates)
     date_max_next_day = dt.datetime.strptime(date_max, '%Y-%m-%d') + dt.timedelta(days=1)
     date_month_before_max = dt.datetime.strptime(date_max, '%Y-%m-%d') - dt.timedelta(days=30)

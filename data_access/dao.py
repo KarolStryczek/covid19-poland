@@ -7,23 +7,23 @@ voivodeships_filepath = r'data_access/voivodeships.csv'
 updates_filepath = r'data_access/update.csv'
 
 
-def get_voivodeships():
+def get_voivodeships() -> pd.DataFrame:
     return pd.read_csv(voivodeships_filepath)
 
 
-def get_cases():
+def get_cases() -> pd.DataFrame:
     return pd.read_csv(cases_filepath)
 
 
-def get_updates():
+def get_updates() -> pd.DataFrame:
     return pd.read_csv(updates_filepath)
 
 
-def save_update(update):
+def save_update(update) -> None:
     update.to_csv(updates_filepath, index=False, header=False, mode='a')
 
 
-def get_cases_filtered(voivodeship: str = None, date_from: str = None, date_to: str = None):
+def get_cases_filtered(voivodeship: str = None, date_from: str = None, date_to: str = None) -> pd.DataFrame:
     cases = get_cases()
     if voivodeship is not None:
         cases = cases[cases.voivodeship == voivodeship]
@@ -36,7 +36,7 @@ def get_cases_filtered(voivodeship: str = None, date_from: str = None, date_to: 
     return cases
 
 
-def get_cases_grouped(voivodeship: str = None, date_from: str = None, date_to: str = None):
+def get_cases_grouped(voivodeship: str = None, date_from: str = None, date_to: str = None) -> pd.DataFrame:
     cases = get_cases_filtered(voivodeship, date_from, date_to)
     cases = cases.groupby('voivodeship').sum()
     cases.reset_index(inplace=True)
