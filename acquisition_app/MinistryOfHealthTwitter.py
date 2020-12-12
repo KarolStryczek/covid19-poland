@@ -13,10 +13,6 @@ class MinistryOfHealthTwitter:
         auth = tweepy.OAuthHandler(os.getenv('TWITTER_API_KEY'), os.getenv('TWITTER_API_KEY_SECRET'))
         auth.set_access_token(os.getenv('TWITTER_ACCESS_TOKEN'), os.getenv('TWITTER_ACCESS_TOKEN_SECRET'))
         self.api = tweepy.API(auth)
-        self.tweets = list()
-
-    def get_tweets_cursor(self, **kwargs) -> tweepy.Cursor:
-        return tweepy.Cursor(self.api.user_timeline, id=self.HEALTH_MINISTRY_TWITTER, tweet_mode="extended", **kwargs)
 
     def get_new_cases_tweets(self, count: int = 500, **kwargs) -> List[List[Status]]:
         new_cases_tweets = list()
@@ -35,5 +31,11 @@ class MinistryOfHealthTwitter:
                 previous_tweets.append(tweet)
         return new_cases_tweets
 
+    def get_tweets_cursor(self, **kwargs) -> tweepy.Cursor:
+        return tweepy.Cursor(self.api.user_timeline, id=self.HEALTH_MINISTRY_TWITTER, tweet_mode="extended", **kwargs)
+
     def is_new_cases_start_tweet(self, tweet: Status) -> bool:
-        return self.PATTERN.match(tweet.full_text) is not None
+        return self.match_tweet_text_to_pattern(tweet.full_text)
+
+    def match_tweet_text_to_pattern(self, tweet_text: str) -> bool:
+        return self.PATTERN.match(tweet_text) is not None

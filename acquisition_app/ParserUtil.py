@@ -3,11 +3,13 @@ from typing import Tuple
 import datetime as dt
 from data_access import dao
 import re
+from typing import List
+from tweepy import Status
 
 
-def parse_new_cases(new_cases: pd.DataFrame) -> None:
+def parse_new_cases(new_cases: List[Status]) -> None:
     first_tweet = new_cases[0]
-    tweet_text = first_tweet.full_text + new_cases[1].full_text
+    tweet_text = first_tweet.full_text + ' ' + new_cases[1].full_text
     new_cases_data = parse_tweet_text(tweet_text)
     new_cases_with_date, date = populate_new_cases_with_date(new_cases_data, first_tweet.created_at)
     dao.save_new_cases(new_cases_with_date)
