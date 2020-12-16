@@ -3,7 +3,7 @@ import pandas as pd
 from data_access import dao
 
 
-def update_data():
+def update_data() -> None:
     updates = dao.get_updates()
     last_id = None
     if len(updates) > 0:
@@ -18,7 +18,3 @@ def update_data():
         dao.save_update(new_update)
         for new_case in new_cases:
             ParserUtil.parse_new_cases(new_case)
-
-
-if __name__ == "__main__":
-    update_data()

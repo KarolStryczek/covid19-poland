@@ -43,7 +43,7 @@ def display_details(hover_data, start_date, end_date):
 @app.callback(Output('page-content', 'children'),
               Input('page-tabs', 'value'))
 def render_content(tab):
-    threading.Thread(UpdateTwitterData.update_data()).start()
+    threading.Thread(target=UpdateTwitterData.update_data).start()
     if tab == 'tab-1':
         return layout.page_1()
     elif tab == 'tab-2':
