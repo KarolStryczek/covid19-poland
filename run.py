@@ -24,7 +24,6 @@ def display_cases_map(start_date, end_date):
 
 
 @app.callback(Output(component_id='voivodeship-details', component_property='figure'),
-              Output(component_id='details-label', component_property='children'),
               Input(component_id='cases-map', component_property='hoverData'),
               Input(component_id='date-picker-range', component_property='start_date'),
               Input(component_id='date-picker-range', component_property='end_date'))
@@ -34,10 +33,16 @@ def display_details(hover_data, start_date, end_date):
         cases = dao.get_cases_filtered(voivodeship_name, start_date, end_date)
         cases.sort_values(by='date', inplace=True)
         fig = px.line(cases[['cases', 'date']], x='date', y='cases')
-        fig.update_layout(xaxis_title="Data", yaxis_title="Liczba nowych przypadków")
-        return fig, f'Województwo: {voivodeship_name}'
-
-    return px.line(), 'Nakieruj kursor na dowolne województwo aby zobaczyć szczegóły'
+        fig.update_layout(
+            title=f'Województwo {voivodeship_name}',
+            xaxis_title="Data",
+            yaxis_title="Liczba nowych przypadków")
+        return fig
+    else:
+        fig = px.line()
+        fig.update_layout(
+            title=f'Nakieruj kursor na dowolne województwo, aby zobaczyć szczegóły.')
+        return px.line()
 
 
 @app.callback(Output('page-content', 'children'),

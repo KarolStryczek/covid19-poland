@@ -14,7 +14,7 @@ def prepare_choropleth_map_from_cases(cases: pd.DataFrame, voivodeships: Dict) -
         hover_name='voivodeship',
         color_continuous_scale="reds",
         labels={'cases': "Nowe przypadki"},
-        hover_data={'id': False}
+        # hover_data={'id': False}
     )
     fig.update_geos(
         fitbounds="locations",
@@ -31,3 +31,6 @@ def prepare_choropleth_map(start_date: AppUtil.any_date, end_date: AppUtil.any_d
     cases, voivodeships = AppUtil.get_cases_and_voivodeships(start_date, end_date)
     return prepare_choropleth_map_from_cases(cases, voivodeships)
 
+
+def prepare_details_graph(hover_data, start_date, end_date):
+    pass

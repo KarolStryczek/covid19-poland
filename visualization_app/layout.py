@@ -39,9 +39,12 @@ def page_1():
         dcc.Graph(
             id='new-cases-map',
             figure=choropleth_map,
+            config={
+                'displayModeBar': False
+            },
             style={
                 'height': '700px',
-                'width': 'auto',
+                'width': '75%',
                 "display": "block",
                 "margin-left": "auto",
                 "margin-right": "auto",
@@ -67,6 +70,9 @@ def page_2():
                     [
                         dcc.Graph(
                             id='cases-map',
+                            config={
+                                'displayModeBar': False
+                            },
                             style={
                                 'height': '100%',
                                 'width': '100%',
@@ -98,11 +104,6 @@ def page_2():
 
                 html.Div(
                     [
-                        html.Div(
-                            id='details-label',
-                            children='Nakieruj kursor na dowolne województwo aby zobaczyć szczegóły'
-                        ),
-
                         dcc.Graph(
                             id='voivodeship-details',
                             style={
