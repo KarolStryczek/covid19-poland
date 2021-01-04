@@ -32,12 +32,7 @@ def display_details(hover_data, start_date, end_date):
         voivodeship_name = hover_data['points'][0]['hovertext']
         cases = dao.get_cases_filtered(voivodeship_name, start_date, end_date)
         cases.sort_values(by='date', inplace=True)
-        fig = px.line(cases[['cases', 'date']], x='date', y='cases')
-        fig.update_layout(
-            title=f'Województwo {voivodeship_name}',
-            xaxis_title="Data",
-            yaxis_title="Liczba nowych przypadków")
-        return fig
+        return callbacks.prepare_details_graph(cases)
     else:
         fig = px.line()
         fig.update_layout(

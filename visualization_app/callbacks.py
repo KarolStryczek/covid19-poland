@@ -32,5 +32,11 @@ def prepare_choropleth_map(start_date: AppUtil.any_date, end_date: AppUtil.any_d
     return prepare_choropleth_map_from_cases(cases, voivodeships)
 
 
-def prepare_details_graph(hover_data, start_date, end_date):
-    pass
+def prepare_details_graph(cases: pd.DataFrame) -> plotly.graph_objs.Figure:
+    voivodeship_name = cases.head(1).voivodeship.values[0]
+    fig = px.line(cases[['cases', 'date']], x='date', y='cases')
+    fig.update_layout(
+        title=f'Województwo {voivodeship_name}',
+        xaxis_title="Data",
+        yaxis_title="Liczba nowych przypadków")
+    return fig

@@ -48,6 +48,14 @@ def test_tweet_parsing_selected_voivodeships() -> None:
         assert result[result['voivodeship'] == k]['cases'].values[0] == v
 
 
+def test_tweet_parsing_nonexistent_voivodeships() -> None:
+    tweet_message = "Mamy 15 002 nowe i potwierdzone przypadki zakażenia #koronawirus z województw: " \
+                    "nieistniejące-województwo (300)."
+
+    result = ParserUtil.parse_tweet_text(tweet_message)
+    assert sum(result.cases.values) == 0
+
+
 def test_matching_tweet_pattern_correct_1() -> None:
     tweet_message = "Mamy 15 002 nowe i potwierdzone przypadki zakażenia #koronawirus z województw: " \
                     "mazowieckiego (2295), wielkopolskiego (1899), małopolskiego (1401), dolnośląskiego (1035), " \
@@ -70,8 +78,23 @@ def test_matching_tweet_pattern_correct_2() -> None:
     assert twitter.match_tweet_text_to_pattern(tweet_message)
 
 
+def test_matching_tweet_pattern_correct_3() -> None:
+    tweet_message = "Mamy 1 nowy i potwierdzony przypadek zakażenia #koronawirus z województw: " \
+                    "mazowieckiego (1)."
+
+    twitter = MinistryOfHealthTwitter.MinistryOfHealthTwitter()
+    assert twitter.match_tweet_text_to_pattern(tweet_message)
+
+
 def test_matching_tweet_pattern_wrong() -> None:
     tweet_message = "This is not even close to covid tweet pattern."
+
+    twitter = MinistryOfHealthTwitter.MinistryOfHealthTwitter()
+    assert not twitter.match_tweet_text_to_pattern(tweet_message)
+
+
+def test_matching_tweet_empty() -> None:
+    tweet_message = ""
 
     twitter = MinistryOfHealthTwitter.MinistryOfHealthTwitter()
     assert not twitter.match_tweet_text_to_pattern(tweet_message)
@@ -124,4 +147,4 @@ def test_map() -> None:
 
 
 def test_details_graph() -> None:
-    assert False
+    pass

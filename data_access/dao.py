@@ -25,7 +25,8 @@ def save_update(update) -> None:
 
 def get_cases_filtered(voivodeship: str = None, date_from: str = None, date_to: str = None) -> pd.DataFrame:
     cases = get_cases()
-    cases = cases.groupby(by=['voivodeship', 'date'], as_index=False).sum()
+    if len(cases) > 0:
+        cases = cases.groupby(by=['voivodeship', 'date'], as_index=False).sum()
     if voivodeship is not None:
         cases = cases[cases.voivodeship == voivodeship]
     if date_from is not None:
